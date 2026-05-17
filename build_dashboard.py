@@ -29,22 +29,8 @@ import tags  # local module — runner tag engine
 # ---------------------------------------------------------------------------
 SCRIPT_DIR = Path(__file__).resolve().parent
 
-def _resolve_betfair_dir() -> Path:
-    env = os.environ.get("BETFAIR_DIR")
-    if env:
-        p = Path(env)
-        if p.exists():
-            return p
-    win = Path(r"C:\Betfair")
-    if win.exists():
-        return win
-    for cand in Path("/sessions").glob("*/mnt/Betfair"):
-        if cand.exists():
-            return cand
-    return win
-
-BETFAIR_DIR  = _resolve_betfair_dir()
-DEFAULT_CARD = BETFAIR_DIR / "todays_card.json"
+DATA_DIR     = SCRIPT_DIR  # all data files live alongside the scripts
+DEFAULT_CARD = SCRIPT_DIR / "todays_card.json"
 OUTPUT_HTML  = SCRIPT_DIR / "dashboard.html"
 
 
@@ -906,9 +892,9 @@ def main():
 
     card = load_card(src)
 
-    ctx = tags.TagContext.load(BETFAIR_DIR, card) if BETFAIR_DIR.exists() else None
+    ctx = tags.TagContext.load(DATA_DIR, card) if DATA_DIR.exists() else None
     if ctx is None:
-        print(f"  [tags] {BETFAIR_DIR} not found — building without tags")
+        print(f"  [tags] {DATA_DIR} not found — building without tags")
 
     html = render_dashboard(card, ctx)
     OUTPUT_HTML.write_text(html, encoding="utf-8")
@@ -927,4 +913,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()                                   
+    main()

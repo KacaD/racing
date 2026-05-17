@@ -95,18 +95,13 @@ def post_process(html, conn_json):
         f'<script>window.__connData={conn_json};</script>'+EXTRA_JS+"</body>", 1)
     return html
 
-# ── find betfair stats dir ────────────────────────────────────────────────────
-def _find_betfair_dir(card_path):
-    """Return best available dir containing trainer_stats.json, or None.
-    Winsmore is self-contained — always prefer the local script/card directory
-    over C:\\Betfair so both local and scheduled runs use the same data.
-    """
+# ── find stats dir ────────────────────────────────────────────────────────────
+def _find_stats_dir(card_path):
+    """Winsmore is self-contained. Look only in the script dir and the card's
+    parent directory — never in C:\\Betfair or any external folder."""
     for candidate in [bd.SCRIPT_DIR, card_path.resolve().parent]:
         if (candidate / "trainer_stats.json").exists():
             return candidate
-    # fallback: legacy C:\Betfair location
-    if bd.BETFAIR_DIR.exists():
-        return bd.BETFAIR_DIR
     return None
 
 # ── main ──────────────────────────────────────────────────────────────────────
@@ -115,10 +110,10 @@ def main():
     if not src.exists():
         sys.exit(f"ERROR: card file not found: {src}")
     card = bd.load_card(src)
-    bf_dir = _find_betfair_dir(src)
-    ctx = tags.TagContext.load(bf_dir, card) if bf_dir else None
+    stats_dir = _find_stats_dir(src)
+    ctx = tags.TagContext.load(stats_dir, card) if stats_dir else None
     if ctx is None:
-        print("WARNING: no Betfair stats dir found — tags and popovers will be empty")
+        print("WARNING: no stats dir found — tags and popovers will be empty")
     html = bd.render_dashboard(card, ctx)
     conn_json = build_conn_json(card, ctx.trainer_stats, ctx.jockey_stats) if ctx else "{}"
     html = post_process(html, conn_json)
@@ -127,7 +122,7 @@ def main():
     n = len(card.get("races",[])); r = sum(len(x.get("runners",[])) for x in card.get("races",[]))
     print(f"Built {card.get('date')}  {n} races  {r} runners  "
           f"{html.count('runner-min')} dismiss-btns  {html.count('conn-name')} conn-btns"
-          + (f"  bf-dir={bf_dir}" if bf_dir else "  (no stats)"))
+          + (f"  data-dir={stats_dir}" if stats_dir else "  (no stats)"))
 
 if __name__ == "__main__":
     main()

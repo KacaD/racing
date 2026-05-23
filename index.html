@@ -331,6 +331,73 @@ main { padding: 10px 12px; max-width: 1100px; margin: 0 auto; }
 
 .hidden { display: none !important; }
 
+/* Course stats panel -------------------------------------------- */
+.cs-wrap { max-width: 1100px; margin: 0 auto; padding: 0 12px 40px; }
+.cs-tab-row {
+  display: flex; flex-wrap: wrap; gap: 5px;
+  padding: 10px 0 8px; border-bottom: 1px solid var(--border);
+}
+.cs-tab-btn {
+  background: var(--bg-3); color: var(--text-2);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 4px 11px; font: inherit; font-size: 12px; cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.cs-tab-btn.on {
+  background: var(--accent-2); color: #000; border-color: var(--accent-2); font-weight: 600;
+}
+.cs-panel { padding: 14px 0; }
+.cs-section { margin-bottom: 20px; }
+.cs-section-lbl {
+  margin: 0 0 6px; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.8px; color: var(--text-3); text-transform: uppercase;
+}
+.cs-overview {}
+.cs-stat-grid {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;
+}
+.cs-stat {
+  background: var(--bg-3); border: 1px solid var(--border);
+  border-radius: 7px; padding: 9px 14px; min-width: 90px;
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.cs-val { font-size: 20px; font-weight: 700; color: var(--text); line-height: 1.1; }
+.cs-lbl { font-size: 11px; color: var(--text-3); margin-top: 3px; }
+.cs-fav-summary {
+  font-size: 12px; color: var(--text-3); margin-top: 4px;
+}
+.cs-table {
+  width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 2px;
+}
+.cs-table th {
+  color: var(--text-3); font-weight: 500; font-size: 11px;
+  text-align: left; padding: 3px 8px 5px;
+  border-bottom: 1px solid var(--border);
+}
+.cs-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); color: var(--text-2); vertical-align: middle; }
+.cs-table tr:last-child td { border-bottom: 0; }
+.cs-num { font-variant-numeric: tabular-nums; text-align: right; }
+.cs-wins { color: var(--fav); font-weight: 600; }
+.cs-today-row td { background: rgba(95,168,211,0.06); }
+.cs-today-dist { font-size: 10px; color: var(--accent-2); margin-left: 4px; }
+.cs-verdict { font-size: 11px; font-weight: 600; padding: 1px 5px; border-radius: 4px; }
+.cs-back    { color: #6ee7a4; }
+.cs-lay     { color: #f87171; }
+.cs-neutral { color: var(--text-3); }
+.cs-back.cs-verdict    { background: rgba(110,231,164,0.12); }
+.cs-lay.cs-verdict     { background: rgba(248,113,113,0.12); }
+.cs-neutral.cs-verdict { background: var(--bg-3); }
+.cs-conn-table { margin-top: 0; }
+.cs-conn-name { color: var(--text); max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cs-pct-cell { width: 100px; position: relative; }
+.cs-pct-bar {
+  display: inline-block; height: 6px; border-radius: 3px;
+  background: var(--accent-2); opacity: 0.4; vertical-align: middle;
+  margin-right: 5px;
+}
+.cs-pct-val { font-size: 11px; color: var(--text-3); vertical-align: middle; }
+.cs-empty { color: var(--text-3); font-style: italic; font-size: 13px; padding: 8px 0; }
+
 /* Mobile tweaks ------------------------------------------------- */
 @media (max-width: 480px) {
   .topbar { padding: 6px 12px; }
@@ -345,6 +412,9 @@ main { padding: 10px 12px; max-width: 1100px; margin: 0 auto; }
   .rc-conn { font-size: 11.5px; }
   .tag { font-size: 10.5px; padding: 2px 6px; }
   .race-title { font-size: 12.5px; }
+  .cs-stat { min-width: 75px; padding: 7px 10px; }
+  .cs-val { font-size: 17px; }
+  .cs-conn-name { max-width: 130px; }
 }
 .conn-name{background:transparent;border:0;padding:0;font:inherit;color:var(--text-2);cursor:pointer;text-decoration:underline dotted var(--text-3);text-underline-offset:3px;}.conn-name:hover{color:var(--text);}.runner-min{background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--text-3);cursor:pointer;font-size:13px;line-height:1;padding:1px 6px;margin-left:6px;flex-shrink:0;transition:color .1s,border-color .1s;}.runner-min:hover{color:var(--text);border-color:var(--text-3);}.runner.dismissed .tag-row,.runner.dismissed .rc-stats,.runner.dismissed .rc-conn{display:none;}.runner.dismissed{opacity:0.38;}.runner.dismissed .rc-head{margin-bottom:0;}</style>
 </head>
@@ -362,9 +432,10 @@ main { padding: 10px 12px; max-width: 1100px; margin: 0 auto; }
 </header>
 
 <nav class="tabbar">
-    <button class="tab-btn" data-tab="timeline">By time</button>
+  <button class="tab-btn" data-tab="timeline">By time</button>
   <button class="tab-btn" data-tab="meetings">By meeting</button>
-  <button class="tab-btn" data-tab="returning">Returning Horses <span class="count">18</span></button>
+  <button class="tab-btn" data-tab="returning">Returning <span class="count">18</span></button>
+  <button class="tab-btn" data-tab="courses">Course Stats</button>
 </nav>
 
 <div class="subcontrols" id="subcontrols">
@@ -1506,6 +1577,330 @@ main { padding: 10px 12px; max-width: 1100px; margin: 0 auto; }
 <div class="runner"><div class="rc-head"><span class="rc-name">Cinammon Coco</span><span class="rc-odds " title="16.00">15/1</span><button class="runner-min" title="Dismiss runner">−</button></div><div class="tag-row"><button class="tag cat-T sev-soft" type="button" data-title="Trainer Books Jockey for First Time" data-body="&lt;p&gt;&lt;b&gt;1 runner today&lt;/b&gt;&lt;/p&gt;&lt;table class=&#x27;pop-table pop-runners-today&#x27;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&#x27;pop-time&#x27;&gt;20:45&lt;/td&gt;&lt;td&gt;Cinammon Coco&lt;/td&gt;&lt;td class=&#x27;pop-odds-cell&#x27;&gt;&lt;b&gt;15/1&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;&lt;b&gt;Harry Vigors&lt;/b&gt; rides for &lt;b&gt;David Pipe&lt;/b&gt; for the first time. Trainer has &lt;b&gt;896&lt;/b&gt; recorded runs.&lt;/p&gt;&lt;table class=&#x27;pop-table&#x27;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Usual jockey&lt;/th&gt;&lt;th&gt;Past rides&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Jack Tudor&lt;/td&gt;&lt;td&gt;334&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Tom Scudamore&lt;/td&gt;&lt;td&gt;131&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Fergus Gillard&lt;/td&gt;&lt;td&gt;77&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Philip Armson&lt;/td&gt;&lt;td&gt;73&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;David Noonan&lt;/td&gt;&lt;td&gt;57&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p class=&#x27;pop-section-label&#x27;&gt;COURSE RECORD&lt;/p&gt;&lt;table class=&#x27;pop-table&#x27;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Salisbury&lt;/td&gt;&lt;td style=&#x27;color:var(--text-2);font-size:11px&#x27;&gt;Overall&lt;/td&gt;&lt;td&gt;0W / 3R (0%)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td style=&#x27;color:var(--text-3);font-size:11px;padding-left:10px&#x27;&gt;Cond&lt;/td&gt;&lt;td style=&#x27;color:var(--text-2);font-size:11px&#x27;&gt;0W / 3R (0%)&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p class=&#x27;pop-section-label&#x27;&gt;FORM&lt;/p&gt;&lt;table class=&#x27;pop-table&#x27;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;All-time&lt;/td&gt;&lt;td&gt;116W / 897R (13%)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Last 14 days&lt;/td&gt;&lt;td&gt;2W / 2R (100%)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Last 28 days&lt;/td&gt;&lt;td&gt;2W / 4R (50%)&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p class=&#x27;pop-foot&#x27;&gt;Pair counts from horse_form.json runs[]&lt;/p&gt;">TJ 1st</button></div><div class="rc-stats"><span class="st"><b>OR</b> 78</span> <span class="st"><b>RPR</b> 87</span> <span class="st"><b>TS</b> 60</span> <span class="st mono"><b>F</b> <span class="f-place">2</span><span class="f-also">0</span><span class="f-win">1</span><span class="f-sep">-</span><span class="f-place">3</span><span class="f-also">6</span></span></div><div class="rc-conn"><span class="conn"><span class="conn-k">J</span> <button class="conn-name" data-jockey="Harry Vigors">Harry Vigors</button></span><span class="conn"><span class="conn-k">T</span> <button class="conn-name" data-trainer="David Pipe">David Pipe</button></span></div></div>
 <div class="runner"><div class="rc-head"><span class="rc-name">One Million Dreams</span><span class="rc-odds " title="33.00">32/1</span><button class="runner-min" title="Dismiss runner">−</button></div><div class="rc-stats"><span class="st"><b>OR</b> 62</span> <span class="st"><b>RPR</b> 90</span> <span class="st"><b>TS</b> 44</span> <span class="st mono"><b>F</b> <span class="f-win">1</span><span class="f-place">2</span><span class="f-sep">-</span><span class="f-also">0</span><span class="f-place">3</span><span class="f-also">0</span></span> <span class="st"><b>L</b> 8d</span></div><div class="rc-conn"><span class="conn"><span class="conn-k">J</span> <button class="conn-name" data-jockey="Luke Morris">Luke Morris</button></span><span class="conn"><span class="conn-k">T</span> <button class="conn-name" data-trainer="Archie Watson">Archie Watson</button></span></div></div></div></details></div></div>
   <div id="view-returning"><div class='returning-panel'><h2>Returning Horses — 120+ Day Absence, 2+ Career Wins</h2><table class='returning-table'><thead><tr><th>Time</th><th>Course</th><th>Horse</th><th>Days off</th><th>W/R (career)</th><th>Odds</th></tr></thead><tbody><tr class='ret-row' data-race-id='haydock-825'><td class='ret-time'>13:45</td><td class='ret-venue'>Haydock</td><td class='ret-horse'>Friendly Soul</td><td class='ret-days'>594d off</td><td class='ret-wr good'>3/4 (75%)</td><td class='ret-odds'>2/1</td></tr><tr class='ret-row' data-race-id='bangor-on-dee-900'><td class='ret-time'>15:00</td><td class='ret-venue'>Bangor-on-Dee</td><td class='ret-horse'>Crystal Glance</td><td class='ret-days'>180d off</td><td class='ret-wr good'>4/12 (33%)</td><td class='ret-odds'>7/1</td></tr><tr class='ret-row' data-race-id='york-1020'><td class='ret-time'>17:00</td><td class='ret-venue'>York</td><td class='ret-horse'>Paladin</td><td class='ret-days'>127d off</td><td class='ret-wr ok'>6/20 (30%)</td><td class='ret-odds'>19/1</td></tr><tr class='ret-row' data-race-id='york-1020'><td class='ret-time'>17:00</td><td class='ret-venue'>York</td><td class='ret-horse'>Rascal Recknell</td><td class='ret-days'>226d off</td><td class='ret-wr ok'>3/13 (23%)</td><td class='ret-odds'>11/1</td></tr><tr class='ret-row' data-race-id='salisbury-1095'><td class='ret-time'>18:15</td><td class='ret-venue'>Salisbury</td><td class='ret-horse'>Tanmawwy</td><td class='ret-days'>556d off</td><td class='ret-wr ok'>5/22 (23%)</td><td class='ret-odds'>13/1</td></tr><tr class='ret-row' data-race-id='salisbury-1155'><td class='ret-time'>19:15</td><td class='ret-venue'>Salisbury</td><td class='ret-horse'>Zoum Zoum</td><td class='ret-days'>176d off</td><td class='ret-wr ok'>3/14 (21%)</td><td class='ret-odds'>5/1</td></tr><tr class='ret-row' data-race-id='bangor-on-dee-865'><td class='ret-time'>14:25</td><td class='ret-venue'>Bangor-on-Dee</td><td class='ret-horse'>Wudya</td><td class='ret-days'>232d off</td><td class='ret-wr ok'>2/10 (20%)</td><td class='ret-odds'>5/1</td></tr><tr class='ret-row' data-race-id='bangor-on-dee-932'><td class='ret-time'>15:32</td><td class='ret-venue'>Bangor-on-Dee</td><td class='ret-horse'>Nibras Gold</td><td class='ret-days'>238d off</td><td class='ret-wr ok'>4/22 (18%)</td><td class='ret-odds'>6/1</td></tr><tr class='ret-row' data-race-id='windsor-1200'><td class='ret-time'>20:00</td><td class='ret-venue'>Windsor</td><td class='ret-horse'>Jakarta</td><td class='ret-days'>219d off</td><td class='ret-wr ok'>2/11 (18%)</td><td class='ret-odds'>13/1</td></tr><tr class='ret-row' data-race-id='york-915'><td class='ret-time'>15:15</td><td class='ret-venue'>York</td><td class='ret-horse'>Danielle</td><td class='ret-days'>196d off</td><td class='ret-wr ok'>2/12 (17%)</td><td class='ret-odds'>-3/11</td></tr><tr class='ret-row' data-race-id='salisbury-1245'><td class='ret-time'>20:45</td><td class='ret-venue'>Salisbury</td><td class='ret-horse'>First Officer</td><td class='ret-days'>240d off</td><td class='ret-wr ok'>6/37 (16%)</td><td class='ret-odds'>9/1</td></tr><tr class='ret-row' data-race-id='cartmel-990'><td class='ret-time'>16:30</td><td class='ret-venue'>Cartmel</td><td class='ret-horse'>Lights Are Green</td><td class='ret-days'>216d off</td><td class='ret-wr ok'>3/20 (15%)</td><td class='ret-odds'>24/1</td></tr><tr class='ret-row' data-race-id='cartmel-1025'><td class='ret-time'>17:05</td><td class='ret-venue'>Cartmel</td><td class='ret-horse'>Of Corse I Can</td><td class='ret-days'>148d off</td><td class='ret-wr ok'>2/15 (13%)</td><td class='ret-odds'>13/1</td></tr><tr class='ret-row' data-race-id='york-810'><td class='ret-time'>13:30</td><td class='ret-venue'>York</td><td class='ret-horse'>Dakota Gold</td><td class='ret-days'>231d off</td><td class='ret-wr ok'>4/32 (12%)</td><td class='ret-odds'>24/1</td></tr><tr class='ret-row' data-race-id='bangor-on-dee-1005'><td class='ret-time'>16:45</td><td class='ret-venue'>Bangor-on-Dee</td><td class='ret-horse'>Faerie Cutlass</td><td class='ret-days'>198d off</td><td class='ret-wr ok'>2/19 (11%)</td><td class='ret-odds'>13/1</td></tr><tr class='ret-row' data-race-id='cartmel-990'><td class='ret-time'>16:30</td><td class='ret-venue'>Cartmel</td><td class='ret-horse'>Croagh Patrick</td><td class='ret-days'>436d off</td><td class='ret-wr ok'>3/30 (10%)</td><td class='ret-odds'>24/1</td></tr><tr class='ret-row' data-race-id='windsor-1017'><td class='ret-time'>16:57</td><td class='ret-venue'>Windsor</td><td class='ret-horse'>Outer Edge</td><td class='ret-days'>208d off</td><td class='ret-wr ok'>2/20 (10%)</td><td class='ret-odds'>24/1</td></tr><tr class='ret-row' data-race-id='york-1020'><td class='ret-time'>17:00</td><td class='ret-venue'>York</td><td class='ret-horse'>Feel The Need</td><td class='ret-days'>120d off</td><td class='ret-wr ok'>4/43 (9%)</td><td class='ret-odds'>15/1</td></tr></tbody></table></div></div>
+  <div id="view-courses"><div class="cs-wrap">
+  <div class="cs-tab-row">
+    <button class="cs-tab-btn on" data-cs-slug="bangor-on-dee">Bangor-on-Dee</button><button class="cs-tab-btn " data-cs-slug="cartmel">Cartmel</button><button class="cs-tab-btn " data-cs-slug="goodwood">Goodwood</button><button class="cs-tab-btn " data-cs-slug="haydock">Haydock</button><button class="cs-tab-btn " data-cs-slug="salisbury">Salisbury</button><button class="cs-tab-btn " data-cs-slug="windsor">Windsor</button><button class="cs-tab-btn " data-cs-slug="york">York</button>
+  </div>
+  <div class="cs-panels">
+    
+<div class="cs-panel" id="cs-panel-bangor-on-dee" style="display:none">
+  <div class="cs-section">
+    
+<div class="cs-overview">
+  <div class="cs-stat-grid">
+    <div class="cs-stat">
+      <span class="cs-val">367</span>
+      <span class="cs-lbl">Races in DB</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">6.6</span>
+      <span class="cs-lbl">Avg field size</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">27%</span>
+      <span class="cs-lbl">Fav win rate</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">7.8</span>
+      <span class="cs-lbl">Avg winner SP</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">81/1</span>
+      <span class="cs-lbl">Biggest winner</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">24%</span>
+      <span class="cs-lbl">Winners 9/1+</span>
+    </div>
+  </div>
+  <div class="cs-fav-summary">
+    Fav distance verdicts — <span class="cs-back">0 BACK</span> · <span class="cs-lay">0 LAY</span>
+  </div>
+</div>
+  </div>
+  <div class="cs-section">
+    <p class="cs-section-lbl">Favourite Profile by Distance</p>
+    <p class='cs-empty'>No favourites data for this course.</p>
+  </div>
+  <div class="cs-section">
+    <p class='cs-section-lbl'>Top Trainers</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>Donald McCain</td><td class='cs-num cs-wins'>64W</td><td class='cs-num'>317R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:50%'></span><span class='cs-pct-val'>20%</span></td></tr><tr><td class='cs-conn-name'>Oliver Greenall &amp; Josh Guerriero</td><td class='cs-num cs-wins'>34W</td><td class='cs-num'>209R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:40%'></span><span class='cs-pct-val'>16%</span></td></tr><tr><td class='cs-conn-name'>Dan Skelton</td><td class='cs-num cs-wins'>16W</td><td class='cs-num'>87R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:45%'></span><span class='cs-pct-val'>18%</span></td></tr><tr><td class='cs-conn-name'>Venetia Williams</td><td class='cs-num cs-wins'>13W</td><td class='cs-num'>45R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:72%'></span><span class='cs-pct-val'>29%</span></td></tr><tr><td class='cs-conn-name'>Fergal O&#x27;Brien</td><td class='cs-num cs-wins'>11W</td><td class='cs-num'>61R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:45%'></span><span class='cs-pct-val'>18%</span></td></tr></tbody></table><p class='cs-section-lbl'>Top Jockeys</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>Brian Hughes</td><td class='cs-num cs-wins'>37W</td><td class='cs-num'>156R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:59%'></span><span class='cs-pct-val'>24%</span></td></tr><tr><td class='cs-conn-name'>Toby Wynne</td><td class='cs-num cs-wins'>20W</td><td class='cs-num'>99R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:50%'></span><span class='cs-pct-val'>20%</span></td></tr><tr><td class='cs-conn-name'>Theo Gillard</td><td class='cs-num cs-wins'>15W</td><td class='cs-num'>104R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:36%'></span><span class='cs-pct-val'>14%</span></td></tr><tr><td class='cs-conn-name'>Henry Brooke</td><td class='cs-num cs-wins'>14W</td><td class='cs-num'>72R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:48%'></span><span class='cs-pct-val'>19%</span></td></tr><tr><td class='cs-conn-name'>Sam Twiston-Davies</td><td class='cs-num cs-wins'>14W</td><td class='cs-num'>62R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:56%'></span><span class='cs-pct-val'>23%</span></td></tr></tbody></table>
+  </div>
+</div>
+<div class="cs-panel" id="cs-panel-cartmel" style="display:none">
+  <div class="cs-section">
+    
+<div class="cs-overview">
+  <div class="cs-stat-grid">
+    <div class="cs-stat">
+      <span class="cs-val">240</span>
+      <span class="cs-lbl">Races in DB</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">7.1</span>
+      <span class="cs-lbl">Avg field size</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">25%</span>
+      <span class="cs-lbl">Fav win rate</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">8.2</span>
+      <span class="cs-lbl">Avg winner SP</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">81/1</span>
+      <span class="cs-lbl">Biggest winner</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">29%</span>
+      <span class="cs-lbl">Winners 9/1+</span>
+    </div>
+  </div>
+  <div class="cs-fav-summary">
+    Fav distance verdicts — <span class="cs-back">0 BACK</span> · <span class="cs-lay">0 LAY</span>
+  </div>
+</div>
+  </div>
+  <div class="cs-section">
+    <p class="cs-section-lbl">Favourite Profile by Distance</p>
+    <p class='cs-empty'>No favourites data for this course.</p>
+  </div>
+  <div class="cs-section">
+    <p class='cs-section-lbl'>Top Trainers</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>James Moffatt</td><td class='cs-num cs-wins'>32W</td><td class='cs-num'>190R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:42%'></span><span class='cs-pct-val'>17%</span></td></tr><tr><td class='cs-conn-name'>Ben Haslam</td><td class='cs-num cs-wins'>21W</td><td class='cs-num'>89R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:58%'></span><span class='cs-pct-val'>24%</span></td></tr><tr><td class='cs-conn-name'>Sam England</td><td class='cs-num cs-wins'>13W</td><td class='cs-num'>64R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:50%'></span><span class='cs-pct-val'>20%</span></td></tr><tr><td class='cs-conn-name'>Dianne Sayer</td><td class='cs-num cs-wins'>11W</td><td class='cs-num'>65R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:42%'></span><span class='cs-pct-val'>17%</span></td></tr><tr><td class='cs-conn-name'>Donald McCain</td><td class='cs-num cs-wins'>8W</td><td class='cs-num'>59R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:33%'></span><span class='cs-pct-val'>14%</span></td></tr></tbody></table><p class='cs-section-lbl'>Top Jockeys</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>Charlotte Jones</td><td class='cs-num cs-wins'>21W</td><td class='cs-num'>109R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:48%'></span><span class='cs-pct-val'>19%</span></td></tr><tr><td class='cs-conn-name'>Richie McLernon</td><td class='cs-num cs-wins'>19W</td><td class='cs-num'>78R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:60%'></span><span class='cs-pct-val'>24%</span></td></tr><tr><td class='cs-conn-name'>Sean Quinlan</td><td class='cs-num cs-wins'>17W</td><td class='cs-num'>92R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:46%'></span><span class='cs-pct-val'>18%</span></td></tr><tr><td class='cs-conn-name'>Sean Bowen</td><td class='cs-num cs-wins'>17W</td><td class='cs-num'>79R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:53%'></span><span class='cs-pct-val'>22%</span></td></tr><tr><td class='cs-conn-name'>Brian Hughes</td><td class='cs-num cs-wins'>13W</td><td class='cs-num'>98R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:33%'></span><span class='cs-pct-val'>13%</span></td></tr></tbody></table>
+  </div>
+</div>
+<div class="cs-panel" id="cs-panel-goodwood" style="display:none">
+  <div class="cs-section">
+    
+<div class="cs-overview">
+  <div class="cs-stat-grid">
+    <div class="cs-stat">
+      <span class="cs-val">540</span>
+      <span class="cs-lbl">Races in DB</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">9.0</span>
+      <span class="cs-lbl">Avg field size</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">17%</span>
+      <span class="cs-lbl">Fav win rate</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">9.9</span>
+      <span class="cs-lbl">Avg winner SP</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">151/1</span>
+      <span class="cs-lbl">Biggest winner</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">38%</span>
+      <span class="cs-lbl">Winners 9/1+</span>
+    </div>
+  </div>
+  <div class="cs-fav-summary">
+    Fav distance verdicts — <span class="cs-back">0 BACK</span> · <span class="cs-lay">0 LAY</span>
+  </div>
+</div>
+  </div>
+  <div class="cs-section">
+    <p class="cs-section-lbl">Favourite Profile by Distance</p>
+    <p class='cs-empty'>No favourites data for this course.</p>
+  </div>
+  <div class="cs-section">
+    <p class='cs-section-lbl'>Top Trainers</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>Andrew Balding</td><td class='cs-num cs-wins'>36W</td><td class='cs-num'>250R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:36%'></span><span class='cs-pct-val'>14%</span></td></tr><tr><td class='cs-conn-name'>William Haggas</td><td class='cs-num cs-wins'>28W</td><td class='cs-num'>134R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:52%'></span><span class='cs-pct-val'>21%</span></td></tr><tr><td class='cs-conn-name'>Ralph Beckett</td><td class='cs-num cs-wins'>25W</td><td class='cs-num'>150R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:41%'></span><span class='cs-pct-val'>17%</span></td></tr><tr><td class='cs-conn-name'>Richard Hannon</td><td class='cs-num cs-wins'>23W</td><td class='cs-num'>205R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:28%'></span><span class='cs-pct-val'>11%</span></td></tr><tr><td class='cs-conn-name'>John &amp; Thady Gosden</td><td class='cs-num cs-wins'>19W</td><td class='cs-num'>117R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:40%'></span><span class='cs-pct-val'>16%</span></td></tr></tbody></table><p class='cs-section-lbl'>Top Jockeys</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>Tom Marquand</td><td class='cs-num cs-wins'>26W</td><td class='cs-num'>185R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:35%'></span><span class='cs-pct-val'>14%</span></td></tr><tr><td class='cs-conn-name'>William Buick</td><td class='cs-num cs-wins'>26W</td><td class='cs-num'>150R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:43%'></span><span class='cs-pct-val'>17%</span></td></tr><tr><td class='cs-conn-name'>Oisin Murphy</td><td class='cs-num cs-wins'>26W</td><td class='cs-num'>142R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:45%'></span><span class='cs-pct-val'>18%</span></td></tr><tr><td class='cs-conn-name'>Rossa Ryan</td><td class='cs-num cs-wins'>18W</td><td class='cs-num'>148R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:30%'></span><span class='cs-pct-val'>12%</span></td></tr><tr><td class='cs-conn-name'>Kieran Shoemark</td><td class='cs-num cs-wins'>17W</td><td class='cs-num'>109R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:38%'></span><span class='cs-pct-val'>16%</span></td></tr></tbody></table>
+  </div>
+</div>
+<div class="cs-panel" id="cs-panel-haydock" style="display:none">
+  <div class="cs-section">
+    
+<div class="cs-overview">
+  <div class="cs-stat-grid">
+    <div class="cs-stat">
+      <span class="cs-val">864</span>
+      <span class="cs-lbl">Races in DB</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">8.1</span>
+      <span class="cs-lbl">Avg field size</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">24%</span>
+      <span class="cs-lbl">Fav win rate</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">8.8</span>
+      <span class="cs-lbl">Avg winner SP</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">81/1</span>
+      <span class="cs-lbl">Biggest winner</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">32%</span>
+      <span class="cs-lbl">Winners 9/1+</span>
+    </div>
+  </div>
+  <div class="cs-fav-summary">
+    Fav distance verdicts — <span class="cs-back">0 BACK</span> · <span class="cs-lay">0 LAY</span>
+  </div>
+</div>
+  </div>
+  <div class="cs-section">
+    <p class="cs-section-lbl">Favourite Profile by Distance</p>
+    <p class='cs-empty'>No favourites data for this course.</p>
+  </div>
+  <div class="cs-section">
+    <p class='cs-section-lbl'>Top Trainers</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>William Haggas</td><td class='cs-num cs-wins'>45W</td><td class='cs-num'>166R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:67%'></span><span class='cs-pct-val'>27%</span></td></tr><tr><td class='cs-conn-name'>K R Burke</td><td class='cs-num cs-wins'>31W</td><td class='cs-num'>186R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:41%'></span><span class='cs-pct-val'>17%</span></td></tr><tr><td class='cs-conn-name'>David O&#x27;Meara</td><td class='cs-num cs-wins'>24W</td><td class='cs-num'>181R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:33%'></span><span class='cs-pct-val'>13%</span></td></tr><tr><td class='cs-conn-name'>Dan Skelton</td><td class='cs-num cs-wins'>23W</td><td class='cs-num'>96R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:59%'></span><span class='cs-pct-val'>24%</span></td></tr><tr><td class='cs-conn-name'>Ed Walker</td><td class='cs-num cs-wins'>23W</td><td class='cs-num'>122R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:47%'></span><span class='cs-pct-val'>19%</span></td></tr></tbody></table><p class='cs-section-lbl'>Top Jockeys</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>Tom Marquand</td><td class='cs-num cs-wins'>34W</td><td class='cs-num'>176R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:48%'></span><span class='cs-pct-val'>19%</span></td></tr><tr><td class='cs-conn-name'>William Buick</td><td class='cs-num cs-wins'>27W</td><td class='cs-num'>82R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:82%'></span><span class='cs-pct-val'>33%</span></td></tr><tr><td class='cs-conn-name'>Daniel Tudhope</td><td class='cs-num cs-wins'>20W</td><td class='cs-num'>142R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:35%'></span><span class='cs-pct-val'>14%</span></td></tr><tr><td class='cs-conn-name'>Callum Rodriguez</td><td class='cs-num cs-wins'>18W</td><td class='cs-num'>89R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:50%'></span><span class='cs-pct-val'>20%</span></td></tr><tr><td class='cs-conn-name'>Cieren Fallon</td><td class='cs-num cs-wins'>18W</td><td class='cs-num'>87R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:51%'></span><span class='cs-pct-val'>21%</span></td></tr></tbody></table>
+  </div>
+</div>
+<div class="cs-panel" id="cs-panel-salisbury" style="display:none">
+  <div class="cs-section">
+    
+<div class="cs-overview">
+  <div class="cs-stat-grid">
+    <div class="cs-stat">
+      <span class="cs-val">412</span>
+      <span class="cs-lbl">Races in DB</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">7.7</span>
+      <span class="cs-lbl">Avg field size</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">24%</span>
+      <span class="cs-lbl">Fav win rate</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">8.8</span>
+      <span class="cs-lbl">Avg winner SP</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">67/1</span>
+      <span class="cs-lbl">Biggest winner</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">32%</span>
+      <span class="cs-lbl">Winners 9/1+</span>
+    </div>
+  </div>
+  <div class="cs-fav-summary">
+    Fav distance verdicts — <span class="cs-back">0 BACK</span> · <span class="cs-lay">0 LAY</span>
+  </div>
+</div>
+  </div>
+  <div class="cs-section">
+    <p class="cs-section-lbl">Favourite Profile by Distance</p>
+    <p class='cs-empty'>No favourites data for this course.</p>
+  </div>
+  <div class="cs-section">
+    <p class='cs-section-lbl'>Top Trainers</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>Ralph Beckett</td><td class='cs-num cs-wins'>30W</td><td class='cs-num'>145R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:51%'></span><span class='cs-pct-val'>21%</span></td></tr><tr><td class='cs-conn-name'>Richard Hannon</td><td class='cs-num cs-wins'>25W</td><td class='cs-num'>168R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:37%'></span><span class='cs-pct-val'>15%</span></td></tr><tr><td class='cs-conn-name'>Andrew Balding</td><td class='cs-num cs-wins'>22W</td><td class='cs-num'>117R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:47%'></span><span class='cs-pct-val'>19%</span></td></tr><tr><td class='cs-conn-name'>Clive Cox</td><td class='cs-num cs-wins'>21W</td><td class='cs-num'>100R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:52%'></span><span class='cs-pct-val'>21%</span></td></tr><tr><td class='cs-conn-name'>Ed Walker</td><td class='cs-num cs-wins'>13W</td><td class='cs-num'>88R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:36%'></span><span class='cs-pct-val'>15%</span></td></tr></tbody></table><p class='cs-section-lbl'>Top Jockeys</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>Oisin Murphy</td><td class='cs-num cs-wins'>24W</td><td class='cs-num'>76R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:78%'></span><span class='cs-pct-val'>32%</span></td></tr><tr><td class='cs-conn-name'>Hector Crouch</td><td class='cs-num cs-wins'>16W</td><td class='cs-num'>84R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:47%'></span><span class='cs-pct-val'>19%</span></td></tr><tr><td class='cs-conn-name'>Rossa Ryan</td><td class='cs-num cs-wins'>16W</td><td class='cs-num'>103R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:38%'></span><span class='cs-pct-val'>16%</span></td></tr><tr><td class='cs-conn-name'>Rob Hornby</td><td class='cs-num cs-wins'>15W</td><td class='cs-num'>109R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:34%'></span><span class='cs-pct-val'>14%</span></td></tr><tr><td class='cs-conn-name'>Tom Marquand</td><td class='cs-num cs-wins'>14W</td><td class='cs-num'>95R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:36%'></span><span class='cs-pct-val'>15%</span></td></tr></tbody></table>
+  </div>
+</div>
+<div class="cs-panel" id="cs-panel-windsor" style="display:none">
+  <div class="cs-section">
+    
+<div class="cs-overview">
+  <div class="cs-stat-grid">
+    <div class="cs-stat">
+      <span class="cs-val">783</span>
+      <span class="cs-lbl">Races in DB</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">9.0</span>
+      <span class="cs-lbl">Avg field size</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">23%</span>
+      <span class="cs-lbl">Fav win rate</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">9.2</span>
+      <span class="cs-lbl">Avg winner SP</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">101/1</span>
+      <span class="cs-lbl">Biggest winner</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">33%</span>
+      <span class="cs-lbl">Winners 9/1+</span>
+    </div>
+  </div>
+  <div class="cs-fav-summary">
+    Fav distance verdicts — <span class="cs-back">0 BACK</span> · <span class="cs-lay">0 LAY</span>
+  </div>
+</div>
+  </div>
+  <div class="cs-section">
+    <p class="cs-section-lbl">Favourite Profile by Distance</p>
+    <p class='cs-empty'>No favourites data for this course.</p>
+  </div>
+  <div class="cs-section">
+    <p class='cs-section-lbl'>Top Trainers</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>William Haggas</td><td class='cs-num cs-wins'>27W</td><td class='cs-num'>113R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:59%'></span><span class='cs-pct-val'>24%</span></td></tr><tr><td class='cs-conn-name'>Richard Hannon</td><td class='cs-num cs-wins'>23W</td><td class='cs-num'>185R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:31%'></span><span class='cs-pct-val'>12%</span></td></tr><tr><td class='cs-conn-name'>Tony Carroll</td><td class='cs-num cs-wins'>23W</td><td class='cs-num'>187R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:30%'></span><span class='cs-pct-val'>12%</span></td></tr><tr><td class='cs-conn-name'>John &amp; Thady Gosden</td><td class='cs-num cs-wins'>22W</td><td class='cs-num'>70R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:78%'></span><span class='cs-pct-val'>31%</span></td></tr><tr><td class='cs-conn-name'>Ralph Beckett</td><td class='cs-num cs-wins'>20W</td><td class='cs-num'>103R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:48%'></span><span class='cs-pct-val'>19%</span></td></tr></tbody></table><p class='cs-section-lbl'>Top Jockeys</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>Tom Marquand</td><td class='cs-num cs-wins'>45W</td><td class='cs-num'>280R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:40%'></span><span class='cs-pct-val'>16%</span></td></tr><tr><td class='cs-conn-name'>Oisin Murphy</td><td class='cs-num cs-wins'>45W</td><td class='cs-num'>195R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:57%'></span><span class='cs-pct-val'>23%</span></td></tr><tr><td class='cs-conn-name'>Rossa Ryan</td><td class='cs-num cs-wins'>39W</td><td class='cs-num'>218R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:44%'></span><span class='cs-pct-val'>18%</span></td></tr><tr><td class='cs-conn-name'>William Buick</td><td class='cs-num cs-wins'>24W</td><td class='cs-num'>100R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:60%'></span><span class='cs-pct-val'>24%</span></td></tr><tr><td class='cs-conn-name'>Rob Hornby</td><td class='cs-num cs-wins'>21W</td><td class='cs-num'>219R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:23%'></span><span class='cs-pct-val'>10%</span></td></tr></tbody></table>
+  </div>
+</div>
+<div class="cs-panel" id="cs-panel-york" style="display:none">
+  <div class="cs-section">
+    
+<div class="cs-overview">
+  <div class="cs-stat-grid">
+    <div class="cs-stat">
+      <span class="cs-val">515</span>
+      <span class="cs-lbl">Races in DB</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">12.3</span>
+      <span class="cs-lbl">Avg field size</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">20%</span>
+      <span class="cs-lbl">Fav win rate</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">10.8</span>
+      <span class="cs-lbl">Avg winner SP</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">41/1</span>
+      <span class="cs-lbl">Biggest winner</span>
+    </div>
+    <div class="cs-stat">
+      <span class="cs-val">47%</span>
+      <span class="cs-lbl">Winners 9/1+</span>
+    </div>
+  </div>
+  <div class="cs-fav-summary">
+    Fav distance verdicts — <span class="cs-back">0 BACK</span> · <span class="cs-lay">0 LAY</span>
+  </div>
+</div>
+  </div>
+  <div class="cs-section">
+    <p class="cs-section-lbl">Favourite Profile by Distance</p>
+    <p class='cs-empty'>No favourites data for this course.</p>
+  </div>
+  <div class="cs-section">
+    <p class='cs-section-lbl'>Top Trainers</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>William Haggas</td><td class='cs-num cs-wins'>37W</td><td class='cs-num'>176R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:52%'></span><span class='cs-pct-val'>21%</span></td></tr><tr><td class='cs-conn-name'>Andrew Balding</td><td class='cs-num cs-wins'>32W</td><td class='cs-num'>188R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:42%'></span><span class='cs-pct-val'>17%</span></td></tr><tr><td class='cs-conn-name'>K R Burke</td><td class='cs-num cs-wins'>30W</td><td class='cs-num'>263R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:28%'></span><span class='cs-pct-val'>11%</span></td></tr><tr><td class='cs-conn-name'>Kevin Ryan</td><td class='cs-num cs-wins'>24W</td><td class='cs-num'>286R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:20%'></span><span class='cs-pct-val'>8%</span></td></tr><tr><td class='cs-conn-name'>Ralph Beckett</td><td class='cs-num cs-wins'>21W</td><td class='cs-num'>127R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:41%'></span><span class='cs-pct-val'>17%</span></td></tr></tbody></table><p class='cs-section-lbl'>Top Jockeys</p><table class='cs-table cs-conn-table'><tbody><tr><td class='cs-conn-name'>Tom Marquand</td><td class='cs-num cs-wins'>28W</td><td class='cs-num'>179R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:39%'></span><span class='cs-pct-val'>16%</span></td></tr><tr><td class='cs-conn-name'>William Buick</td><td class='cs-num cs-wins'>26W</td><td class='cs-num'>137R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:47%'></span><span class='cs-pct-val'>19%</span></td></tr><tr><td class='cs-conn-name'>Daniel Tudhope</td><td class='cs-num cs-wins'>25W</td><td class='cs-num'>246R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:25%'></span><span class='cs-pct-val'>10%</span></td></tr><tr><td class='cs-conn-name'>Oisin Murphy</td><td class='cs-num cs-wins'>24W</td><td class='cs-num'>145R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:41%'></span><span class='cs-pct-val'>17%</span></td></tr><tr><td class='cs-conn-name'>Ryan Moore</td><td class='cs-num cs-wins'>22W</td><td class='cs-num'>121R</td><td class='cs-pct-cell'><span class='cs-pct-bar' style='width:45%'></span><span class='cs-pct-val'>18%</span></td></tr></tbody></table>
+  </div>
+</div>
+  </div>
+</div>
+<script>
+(function(){
+  var panels = document.querySelectorAll('.cs-panel');
+  var tabs   = document.querySelectorAll('.cs-tab-btn');
+  function showCourse(slug) {
+    panels.forEach(function(p){ p.style.display = p.id === 'cs-panel-' + slug ? '' : 'none'; });
+    tabs.forEach(function(b){ b.classList.toggle('on', b.dataset.csSlug === slug); });
+    localStorage.setItem('winsmore.cs-course', slug);
+  }
+  tabs.forEach(function(b){ b.addEventListener('click', function(){ showCourse(b.dataset.csSlug); }); });
+  var saved = localStorage.getItem('winsmore.cs-course');
+  var validSlugs = Array.from(tabs).map(function(b){ return b.dataset.csSlug; });
+  showCourse(validSlugs.includes(saved) ? saved : validSlugs[0]);
+})();
+</script></div>
 </main>
 
 <div id="popover-backdrop" role="dialog" aria-modal="true">
@@ -1521,11 +1916,13 @@ main { padding: 10px 12px; max-width: 1100px; margin: 0 auto; }
 <script>
 (function(){
   const RACE_TABS = ['timeline', 'meetings'];
+  const ALL_VIEWS = ['timeline', 'meetings', 'returning', 'courses'];
   const setTab = (tab) => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
-    document.getElementById('view-timeline').classList.toggle('hidden', tab !== 'timeline');
-    document.getElementById('view-meetings').classList.toggle('hidden', tab !== 'meetings');
-    document.getElementById('view-returning').classList.toggle('hidden', tab !== 'returning');
+    ALL_VIEWS.forEach(v => {
+      const el = document.getElementById('view-' + v);
+      if (el) el.classList.toggle('hidden', tab !== v);
+    });
     const sc = document.getElementById('subcontrols');
     if (sc) sc.classList.toggle('hidden', !RACE_TABS.includes(tab));
     localStorage.setItem('winsmore.tab', tab);
